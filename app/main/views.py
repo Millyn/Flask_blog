@@ -1,13 +1,17 @@
 # -*- coding=utf-8 -*-
-from flask import render_template, redirect, url_for, flash, request
+from flask import render_template, redirect, url_for, flash, request, current_app
 from . import main
 from ..models import Article
+from sqlalchemy import desc
 
 
-@main.route('/')
-def index():
-    a = Article.query.all()
-    return render_template('index.html', list=a)
+@main.route('/', methods=['GET'])
+@main.route('/index', methods=['GET'])
+@main.route('/index/<int:page>', methods=['GET'])
+def index(page=1):
+    app = current_app._get_current_object()
+    posts = Article.query.order_by(desc(Article.create_time)).paginate(page, app.config['POSTS_PER_PAGE'], False).items
+    return render_template('index.html', list=posts)
 
 
 @main.route('/read/', methods=['GET'])

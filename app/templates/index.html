@@ -21,18 +21,26 @@
 {% endblock %}
 {% block page_content %}
     <div class="row myCenter">
-        <div class="col-xs-6 col-md-4 col-center-block">
+        <div class="col-xs-6 col-md-6 col-center-block">
             <div class="col-md-12">
                 {% for foo in list %}
                     <div class="article">
-                        <h3><a href="{{ url_for('main.read' , id=foo.id) }}">{{ foo.title }}</a></h3>
+                        <div class="col-md-12">
+                            <h3><a href="{{ url_for('main.read' , id=foo.id) }}">{{ foo.title }}</a></h3>
+                        </div>
                         <div class="text-left">
-                            <span class="label label-success ">Date</span>
-                            <small> {{ moment(foo.create_time).fromNow(refresh=True) }}</small>
-                            <span class="label label-info">Category</span>
-                            <small> {{ foo.category.name }}</small>
-                            <span class="label label-danger">User</span>
-                            <small> {{ foo.user.real_name }}</small>
+                            <div class="col-md-4">
+                                <span class="label label-success ">Date</span>
+                                <small> {{ moment(foo.create_time).fromNow(refresh=True) }}</small>
+                            </div>
+                            <div class="col-md-4">
+                                <span class="label label-info">Category</span>
+                                <small> {{ foo.category.name }}</small>
+                            </div>
+                            <div class="col-md-4">
+                                <span class="label label-danger">User</span>
+                                <small> {{ foo.user.real_name }}</small>
+                            </div>
                         </div>
                     </div>
                 {% endfor %}

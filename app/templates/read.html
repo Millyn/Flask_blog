@@ -1,27 +1,28 @@
 {% extends 'base.html' %}
+{% block title %}{{ a.title }} - {{ a.category.name }} - {{ super() }}{% endblock %}
 {% block page_content %}
     <div class="col-md-8 col-md-offset-2">
-    <h2>{{ a.title }}</h2>
-    <div class="text-left">
-        <span class="label label-success ">Date</span>
-        {#            <small> {{ moment(a.create_time).fromNow(refresh=True) }}</small>#}
-        <small> {{ moment(a.create_time).format("YYYY年MM月DD日") }}</small>
-        <span class="label label-info">Category</span>
-        <small> {{ a.category.name }}</small>
-        <span class="label label-danger">User</span>
-        <small> {{ a.user.real_name }}</small>
-    </div>
-    <hr>
-    <div class="read_body">
-        {{ a.body|markdown }}
-    </div>
-    <div class="text-right">
-        <small>
-            本站文章如未注明,均为原创请勿在未授权的情况下转载.
-        </small>
-    </div>
-    <div class="read_comment">
-        <div id="disqus_thread"></div>
+        <h2>{{ a.title }}</h2>
+        <div class="text-left">
+            <span class="label label-success ">Date</span>
+            <small> {{ moment(a.create_time).format("YYYY年MM月DD日") }}</small>
+            <span class="label label-info">Category</span>
+            <small> {{ a.category.name }}</small>
+            <span class="label label-danger">User</span>
+            <small> {{ a.user.real_name }}</small>
+        </div>
+        <hr>
+        <div class="read_body">
+            {{ a.body|markdown }}
+        </div>
+        <div class="text-right">
+            <small>
+                本站文章如未注明,均为原创请勿在未授权的情况下转载.
+            </small>
+        </div>
+        <div class="read_comment">
+            <div id="disqus_thread"></div>
+        </div>
     </div>
 {% endblock %}
 {% block scripts %}
