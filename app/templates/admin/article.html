@@ -20,26 +20,6 @@
             </div>
         </div>
     </div>
-    {#    <div class="col-md-6">#}
-    {#        <table class="table">#}
-    {#            <thead>#}
-    {#            <tr>#}
-    {#                <th>文章编号</th>#}
-    {#                <th>文章标题</th>#}
-    {#                <th>操作</th>#}
-    {#            </tr>#}
-    {#            </thead>#}
-    {#            <tbody>#}
-    {#            {% for foo in list %}#}
-    {#                <tr>#}
-    {#                    <td>{{ foo.id }}</td>#}
-    {#                    <th>{{ foo.title }}</th>#}
-    {#                    <td><a href="{{ url_for('admin.article_del',id=foo.id,a='del') }}">删除</a></td>#}
-    {#                </tr>#}
-    {#            {% endfor %}#}
-    {#            </tbody>#}
-    {#        </table>#}
-    {#    </div>#}
 {% endblock %}
 {% block scripts %}
     {{ super() }}

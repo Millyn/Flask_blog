@@ -1,8 +1,10 @@
 # -*- coding=utf-8 -*-
-from . import admin
 from flask import render_template, flash, redirect, url_for, request, current_app
 from flask.ext.login import login_required, current_user, login_user, logout_user
+from flask.ext.paginate import Pagination
 from forms import LoginForm, RegistrationForm, PostArticleForm, PostCategoryForm
+from sqlalchemy import desc
+from . import admin
 from ..models import User, Article, Category
 from .. import db
 
@@ -69,10 +71,12 @@ def article():
 
 
 @admin.route('/article/control')
+@admin.route('/article/control/<int:page>')
 @login_required
-def article_control():
-    list = Article.query.all()
-    return render_template('admin/control.html', list=list)
+def article_control(page=1):
+    pages = Article.query.order_by(desc(Article.create_time)).paginate(page, 10, False)
+    list = pages.items
+    return render_template('admin/control.html', list=list, pages=pages)
 
 
 @admin.route('/article/del', methods=['GET'])
@@ -84,9 +88,9 @@ def article_del():
             db.session.delete(x)
             db.session.commit()
             flash(u'已经删除' + x.title)
-            return redirect(url_for('admin.article'))
+            return redirect(url_for('admin.article_control'))
         flash(u'请检查输入')
-        return redirect(url_for('admin.article'))
+        return redirect(url_for('admin.article_control'))
 
 
 @admin.route('/category', methods=['GET', 'POST'])

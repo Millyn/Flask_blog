@@ -1,4 +1,67 @@
 {% extends 'base.html' %}
-{% block content %}
+{% block styles %}
+    {{ super() }}
+    <style>
+        .pagination-page-info {
+            padding: .6em;
+            padding-left: 0;
+            width: 40em;
+            margin: .5em;
+            margin-left: 0;
+            font-size: 12px;
+        }
 
+        .pagination-page-info b {
+            color: black;
+            background: #6aa6ed;
+            padding-left: 2px;
+            padding: .1em .25em;
+            font-size: 150%;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="col-md-12">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>文章编号</th>
+                <th>文章标题</th>
+                <th>文章分类</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for foo in list %}
+                <tr>
+                    <td>{{ foo.id }}</td>
+                    <th>{{ foo.title }}</th>
+                    <th>{{ foo.category.name }}</th>
+                    <td><a href="{{ url_for('admin.article_del',id=foo.id,a='del') }}">删除</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-12">
+        <nav>
+            <ul class="pagination">
+                <li>
+                    {% if pages.has_prev %}
+                        <a href="/admin/article/control/{{ pages.prev_num }}">上一页</a>
+                    {% endif %}
+                </li>
+                {% for p in pages.iter_pages() %}
+                    <li><a href="/admin/article/control/{{ p }}">{{ p }}</a></li>
+                {% endfor %}
+                {% if pages.has_next %}
+                    <li>
+                        <a href="/admin/article/control/{{ pages.next_num }}">下一页</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+
+
+    </div>
 {% endblock %}

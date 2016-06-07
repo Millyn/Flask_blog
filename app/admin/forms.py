@@ -4,7 +4,6 @@ from ..models import Category
 from wtforms import StringField, SubmitField, PasswordField, TextAreaField
 from wtforms.validators import Required, length, Regexp, EqualTo
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
-from flask_pagedown.fields import PageDownField
 
 
 class LoginForm(Form):
