@@ -47,7 +47,25 @@
             </div>
         </div>
     </div>
-
+    <div class="col-md-3 col-md-offset-5">
+        <nav>
+            <ul class="pagination">
+                <li>
+                    {% if pages.has_prev %}
+                        <a href="/index/{{ pages.prev_num }}">上一页</a>
+                    {% endif %}
+                </li>
+{#                {% for p in pages.iter_pages() %}#}
+{#                    <li><a href="/index/{{ p }}">{{ p }}</a></li>#}
+{#                {% endfor %}#}
+                {% if pages.has_next %}
+                    <li>
+                        <a href="/index/{{ pages.next_num }}">下一页</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
 {% endblock %}
 {% block scripts %}
     {{ super() }}

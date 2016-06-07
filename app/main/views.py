@@ -10,8 +10,9 @@ from sqlalchemy import desc
 @main.route('/index/<int:page>', methods=['GET'])
 def index(page=1):
     app = current_app._get_current_object()
-    posts = Article.query.order_by(desc(Article.create_time)).paginate(page, app.config['POSTS_PER_PAGE'], False).items
-    return render_template('index.html', list=posts)
+    pages = Article.query.order_by(desc(Article.create_time)).paginate(page, app.config['POSTS_PER_PAGE'], False)
+    list = pages.items
+    return render_template('index.html', pages=pages, list=list)
 
 
 @main.route('/read/', methods=['GET'])
