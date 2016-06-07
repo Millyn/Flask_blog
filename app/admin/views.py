@@ -1,7 +1,6 @@
 # -*- coding=utf-8 -*-
 from flask import render_template, flash, redirect, url_for, request, current_app
 from flask.ext.login import login_required, current_user, login_user, logout_user
-from flask.ext.paginate import Pagination
 from forms import LoginForm, RegistrationForm, PostArticleForm, PostCategoryForm
 from sqlalchemy import desc
 from . import admin
