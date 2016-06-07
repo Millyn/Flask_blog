@@ -57,14 +57,22 @@ def logout():
 @login_required
 def article():
     form = PostArticleForm()
-    alist = Article.query.all()
-    if form.validate_on_submit():
-        acticle = Article(title=form.title.data, body=form.body.data, category_id=str(form.category_id.data.id),
-                          user_id=current_user.id)
-        db.session.add(acticle)
-        flash(u'文章添加成功')
-        redirect(url_for('admin.index'))
-    return render_template('admin/article.html', form=form, list=alist)
+    if request.method == 'POST':
+        if form.title.data != '' and form.body.data != '' and form.category_id.data.id != '':
+            acticle = Article(title=form.title.data, body=form.body.data, category_id=str(form.category_id.data.id),
+                              user_id=current_user.id)
+            db.session.add(acticle)
+            return u'1'
+        else:
+            return u'0'
+    return render_template('admin/article.html', form=form)
+
+
+@admin.route('/article/control')
+@login_required
+def article_control():
+    list = Article.query.all()
+    return render_template('admin/control.html', list=list)
 
 
 @admin.route('/article/del', methods=['GET'])

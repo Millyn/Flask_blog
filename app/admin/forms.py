@@ -27,7 +27,7 @@ class RegistrationForm(Form):
 
 class PostArticleForm(Form):
     title = StringField(u'标题', validators=[Required(), length(6, 64)])
-    body = PageDownField(u'内容', validators=[Required()])
+    body = TextAreaField(u'内容', validators = [Required()])
     category_id = QuerySelectField(u'分类', query_factory=lambda: Category.query.all(
     ), get_pk=lambda a: str(a.id), get_label=lambda a: a.name)
     submit = SubmitField(u'发布')

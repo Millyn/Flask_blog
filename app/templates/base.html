@@ -1,7 +1,7 @@
 {% extends "bootstrap/base.html" %}
 {% block head %}
     {{ super() }}
-    <link rel="Shortcut Icon" href="static/web.ico">
+    <link rel="Shortcut Icon" href="../static/web.ico">
 {% endblock %}
 {% block styles %}
     {{ super() }}
@@ -37,7 +37,15 @@
                     <li><a href="{{ url_for('main.index') }}">首页</a></li>
                     {% if current_user.is_authenticated %}
                         <li><a href="{{ url_for('admin.index') }}">后台首页</a></li>
-                        <li><a href="{{ url_for('admin.article') }}">文章</a></li>
+                        {#                        <li><a href="{{ url_for('admin.article') }}">文章</a></li>#}
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">文章 <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="{{ url_for('admin.article') }}">发表文章</a></li>
+                                    <li><a href="{{ url_for('admin.article_control') }}">文章管理</a></li>
+                                </ul>
+                            </a>
+                        </li>
                         <li><a href="{{ url_for('admin.category') }}">分类</a></li>
                     {% endif %}
                 </ul>

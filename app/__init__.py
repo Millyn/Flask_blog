@@ -3,15 +3,12 @@ from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.bootstrap import Bootstrap  # 引入Flask-Bootstrap
 from flask.ext.login import LoginManager  # 引入Flask-Login
-from flask_pagedown import PageDown  # 引入Markdown编辑器
-from flaskext.markdown import Markdown  # 引入Markdown 前端显示
 from flask.ext.moment import Moment  # 引入时间组件
 from config import config
 
 db = SQLAlchemy()  # 实例化对象
 bootstrap = Bootstrap()  # 实例化对象
 login_manager = LoginManager()  # 实例化对象
-pagedown = PageDown()
 moment = Moment()
 login_manager.session_protection = 'strong'  # 设置flask-login session等级
 login_manager.login_view = 'admin.login'  # 如果未登入转跳到指定方法
@@ -26,8 +23,6 @@ def create_app(config_name):
     db.init_app(app)
     bootstrap.init_app(app)
     login_manager.init_app(app)
-    pagedown.init_app(app)
-    Markdown(app)
     moment.init_app(app)
 
     from .main import main as main_blueprint
