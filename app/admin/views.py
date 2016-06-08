@@ -89,7 +89,7 @@ def article_edit(id):
         try:
             db.session.add(article)
             return u'1'
-        expect:
+        except:
             db.session.rollback()
             return u'0'
     flash(u'您当前修改的是'+str(article.id)+u'编号的主题')
