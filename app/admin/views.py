@@ -27,7 +27,6 @@ def login():
 
 @admin.route('/register', methods=['GET', 'POST'])
 def register():
-    # register_key = 'zhucema'
     app = current_app._get_current_object()
     form = RegistrationForm()
     if form.validate_on_submit():
@@ -87,13 +86,12 @@ def article_edit(id):
         article.title = form.title.data
         article.body = form.body.data
         article.category_id = form.category_id.data.id
-       try:
-           db.session.add(article)
-           return u'1'
-       expect:
-           return u'0'
-
-    #article = Article.query.filter_by(id=id).first()
+        try:
+            db.session.add(article)
+            return u'1'
+        expect:
+            db.session.rollback()
+            return u'0'
     flash(u'您当前修改的是'+str(article.id)+u'编号的主题')
     return render_template('admin/edit.html', article=article, form=form)
 
