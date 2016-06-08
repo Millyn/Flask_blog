@@ -15,9 +15,9 @@ def index(page=1):
     return render_template('index.html', pages=pages, list=list)
 
 
-@main.route('/read/', methods=['GET'])
-def read():
-    a = Article.query.filter_by(id=request.args.get('id')).first()
+@main.route('/read/<int:id>',methods=['GET'])
+def read(id):
+    a = Article.query.get_or_404(id)
     if a is not None:
         return render_template('read.html', a=a)
     flash(u'未找到相关文章')
