@@ -6,7 +6,7 @@ from sqlalchemy import desc
 from . import admin
 from ..models import User, Article, Category
 from .. import db
-
+from datetime import datetime
 
 @admin.route('/')
 def index():
@@ -59,8 +59,7 @@ def article():
     form = PostArticleForm()
     if request.method == 'POST':
         if form.title.data != '' and form.body.data != '' and form.category_id.data.id != '':
-            acticle = Article(title=form.title.data, body=form.body.data, category_id=str(form.category_id.data.id),
-                              user_id=current_user.id)
+            acticle = Article(title=form.title.data, body=form.body.data, category_id=str(form.category_id.data.id),user_id=current_user.id,create_time=datetime.utcnow())
             db.session.add(acticle)
             return u'1'
         else:
