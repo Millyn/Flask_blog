@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" href="/static/css/editormd.min.css">
+{% endblock %}
+{% block page_content %}
+    <div class="col-md-12">
+        <div class="col-md-10">
+            <div>{{ form.title.label }}: {{ form.title(class="form-control",value=article.title) }}</div>
+        </div>
+        <div class="col-md-2">
+            <div>{{ form.submit(class="btn btn-success",style="margin-top:24px;") }}</div>
+        </div>
+        <div class="col-md-12">
+            <div>{{ form.category_id.label }}: {{ form.category_id(class="form-control") }}</div>
+            <div><label for="editormd">文章内容: </label></div>
+            <div id="editormd">
+                <textarea style="display:none;">{{ article.body }}</textarea>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+    {{ super() }}
+    <script src="/static/js/editormd.min.js"></script>
+    <script src="/static/js/layer.js"></script>
+    <script type="text/javascript">
+
+        var testEditor;
+
+        $(function () {
+            testEditor = editormd("editormd", {
+                width: "100%",
+                height: 520,
+                path: '/static/js/lib/',
+                previewTheme: "dark",
+                codeFold: true,
+                saveHTMLToTextarea: true,    // 保存 HTML 到 Textarea
+                searchReplace: true,
+                //watch : false,                // 关闭实时预览
+                htmlDecode: "style,script,iframe|on*",            // 开启 HTML 标签解析，为了安全性，默认不开启
+                emoji: true,
+                taskList: true,
+                tocm: true,         // Using [TOCM]
+                tex: true,                   // 开启科学公式TeX语言支持，默认关闭
+                flowChart: true,             // 开启流程图支持，默认关闭
+                sequenceDiagram: true,       // 开启时序/序列图支持，默认关闭,
+                imageUpload: false,
+                {#                    imageFormats: ["jpg", "jpeg", "gif", "png", "bmp", "webp"],#}
+                {#                    imageUploadURL: "./php/upload.php",#}
+                onload: function () {
+                    console.log('onload', this);
+                }
+            });
+            $("#category_id").val({{ article.category_id }});
+            $("#submit").bind('click', function () {
+                $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+                var title = $("#title").val();
+                var category_id = $("#category_id").val();
+                var body = testEditor.getMarkdown();
+                $.post('../edit/'+{{article.id}}, {
+                    id:{{ article.id }},title: title, category_id: category_id, body: body
+                }, function (data) {
+                    if (data == '1') {
+                        layer.msg('文章编辑成功,正在准备转跳', function () {
+                            document.location.href = /admin/;
+                        });
+                    } else {
+                        layer.msg('传入失败,请检查字段')
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

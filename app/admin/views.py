@@ -78,6 +78,26 @@ def article_control(page=1):
     return render_template('admin/control.html', list=list, pages=pages)
 
 
+@admin.route('/article/edit/<int:id>', methods=['POST','GET'])
+@login_required
+def article_edit(id):
+    form = PostArticleForm()
+    article = Article.query.get_or_404(id)
+    if request.method == 'POST':
+        article.title = form.title.data
+        article.body = form.body.data
+        article.category_id = form.category_id.data.id
+       try:
+           db.session.add(article)
+           return u'1'
+       expect:
+           return u'0'
+
+    #article = Article.query.filter_by(id=id).first()
+    flash(u'您当前修改的是'+str(article.id)+u'编号的主题')
+    return render_template('admin/edit.html', article=article, form=form)
+
+
 @admin.route('/article/del', methods=['GET'])
 @login_required
 def article_del():
