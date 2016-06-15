@@ -7,6 +7,10 @@ from . import admin
 from ..models import User, Article, Category
 from .. import db
 from datetime import datetime
+from werkzeug.contrib.cache import SimpleCache
+
+category_cache = SimpleCache()
+
 
 @admin.route('/')
 def index():
@@ -59,7 +63,8 @@ def article():
     form = PostArticleForm()
     if request.method == 'POST':
         if form.title.data != '' and form.body.data != '' and form.category_id.data.id != '':
-            acticle = Article(title=form.title.data, body=form.body.data, category_id=str(form.category_id.data.id),user_id=current_user.id,create_time=datetime.utcnow())
+            acticle = Article(title=form.title.data, body=form.body.data, category_id=str(form.category_id.data.id),
+                              user_id=current_user.id, create_time=datetime.utcnow())
             db.session.add(acticle)
             return u'1'
         else:
@@ -76,7 +81,7 @@ def article_control(page=1):
     return render_template('admin/control.html', list=list, pages=pages)
 
 
-@admin.route('/article/edit/<int:id>', methods=['POST','GET'])
+@admin.route('/article/edit/<int:id>', methods=['POST', 'GET'])
 @login_required
 def article_edit(id):
     form = PostArticleForm()
@@ -91,7 +96,7 @@ def article_edit(id):
         except:
             db.session.rollback()
             return u'0'
-    flash(u'您当前修改的是'+str(article.id)+u'编号的主题')
+    flash(u'您当前修改的是' + str(article.id) + u'编号的主题')
     return render_template('admin/edit.html', article=article, form=form)
 
 
@@ -111,14 +116,19 @@ def article_del():
 
 @admin.route('/category', methods=['GET', 'POST'])
 def category():
-    clist = Category.query.all()
+    global category_cache
     form = PostCategoryForm()
     if form.validate_on_submit():
         category = Category(name=form.name.data)
         db.session.add(category)
         flash(u'分类添加成功')
+        cache(Category, category_cache, 'clist', 600)
         return redirect(url_for('admin.index'))
-    return render_template('admin/category.html', form=form, list=clist)
+    elif category_cache.get('clist') is not None:
+        return render_template('admin/category.html', form=form, list=category_cache.get('clist'))
+    else:
+        cache(Category, category_cache, 'clist', 600)
+        return render_template('admin/category.html', form=form, list=category_cache.get('clist'))
 
 
 @admin.route('/category/del', methods=['GET'])
@@ -130,6 +140,19 @@ def category_del():
             db.session.delete(x)
             db.session.commit()
             flash(u'已经删除' + x.name)
+            clist = Category.query.all()
+            category_cache.set('clist', clist, timeout=600)
             return redirect(url_for('admin.category'))
         flash(u'请检查输入')
         return redirect(url_for('admin.category'))
+
+
+def cache(Sqlname, Cachename, Returnname, Time):
+    cache = Sqlname.query.all()
+    Cachename.set(Returnname, cache, Time)
+    return Cachename
+
+
+@admin.route('/page')
+def page_index():
+    pass
