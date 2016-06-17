@@ -66,9 +66,8 @@ def article():
             acticle = Article(title=form.title.data, body=form.body.data, category_id=str(form.category_id.data.id),
                               user_id=current_user.id, create_time=datetime.utcnow())
             db.session.add(acticle)
-            return u'1'
-        else:
-            return u'0'
+            result = add_db(acticle)
+            return result
     return render_template('admin/article.html', form=form)
 
 
@@ -90,12 +89,8 @@ def article_edit(id):
         article.title = form.title.data
         article.body = form.body.data
         article.category_id = form.category_id.data.id
-        try:
-            db.session.add(article)
-            return u'1'
-        except:
-            db.session.rollback()
-            return u'0'
+        result = add_db(article)
+        return result
     flash(u'您当前修改的是' + str(article.id) + u'编号的主题')
     return render_template('admin/edit.html', article=article, form=form)
 
@@ -121,6 +116,7 @@ def category():
     if form.validate_on_submit():
         category = Category(name=form.name.data)
         db.session.add(category)
+        add_db(category)
         flash(u'分类添加成功')
         cache(Category, category_cache, 'clist', 600)
         return redirect(url_for('admin.index'))
@@ -151,6 +147,15 @@ def cache(Sqlname, Cachename, Returnname, Time):
     cache = Sqlname.query.all()
     Cachename.set(Returnname, cache, Time)
     return Cachename
+
+
+def add_db(Sqlname):
+    try:
+        db.session.commit()
+        return u'1'
+    except:
+        db.session.rollback()
+        return u'0'
 
 
 @admin.route('/page')
